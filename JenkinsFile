@@ -1,0 +1,112 @@
+
+pipeline{
+    agent any
+    tools{
+        jdk 'jdk 17'
+        nodejs 'node 16'
+    }
+    environment {
+        SCANNER_HOME=tool 'Sonar'
+    }
+    stages {
+        stage('clean workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage('Checkout from Git'){
+            steps{
+                git branch: 'main', url: 'https://github.com/N4si/DevSecOps-Project.git'
+            }
+        }
+        stage("Sonarqube Analysis "){
+            environment {
+        scannerHome = tool 'Sonar'
+      }
+            steps {
+        script {
+          withSonarQubeEnv('Sonar') {
+            sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=NetFlix \
+                            -Dsonar.projectName=NetFlix \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=."
+          }
+        }
+      }
+        }
+
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy --timeout 10m fs . > trivyfs.txt"
+            }
+        }
+        stage("Docker Build"){
+            environment {
+                DOCKER_IMAGE = "gbengard/netflix-clone:${BUILD_NUMBER}" 
+                REGISTRY_CREDENTIALS = credentials('docker-cred')
+                API = credentials('TMDB')
+            }
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker-cred'){   
+                       sh "docker build --build-arg TMDB_V3_API_KEY=$API -t $DOCKER_IMAGE ."                       
+                    }
+                }
+            }
+        }
+        stage('Push Image'){
+            environment {
+                DOCKER_IMAGE = "gbengard/netflix-clone:${BUILD_NUMBER}"       
+                REGISTRY_CREDENTIALS = credentials('docker-cred')
+            }
+           steps{
+                script{
+                    def dockerImage = docker.image("${DOCKER_IMAGE}")
+                    docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+        stage("TRIVY"){
+            environment {
+                DOCKER_IMAGE = "gbengard/netflix-clone:${BUILD_NUMBER}"       
+            }
+            steps{
+                sh "trivy image ${DOCKER_IMAGE} > trivyimage.txt" 
+            }
+        }
+        stage('Update K8S manifest & push to Repo'){
+            environment {
+            GIT_REPO_NAME = "DevSecOps-Project"
+            GIT_USER_NAME = "gbengard"
+        }
+            steps {
+                script{
+                    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                        sh '''
+                        git config user.email "gbengardo@gmail.com"
+                        git config user.name "gbengard"
+                        BUILD_NUMBER=${BUILD_NUMBER}
+                        git fetch origin main
+                        git checkout main
+                        sed -i "s/tag:.*/tag: ${BUILD_NUMBER}/" netflix/values.yaml                    
+                        cat netflix/values.yaml
+                        git clean -fd
+                        git add netflix/values.yaml
+                        git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} main
+                '''
+                    }
+                }
+            }
+        }
+    }
+}
