@@ -14,11 +14,7 @@ pipeline{
                 cleanWs()
             }
         }
-        stage('Checkout from Git'){
-            steps{
-              sh "Echo Passed"
-            }
-        }
+
         stage("Sonarqube Analysis "){
             environment {
         scannerHome = tool 'Sonar'
