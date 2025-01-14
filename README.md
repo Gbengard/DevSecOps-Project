@@ -1,10 +1,10 @@
-Here’s the updated `README.md` with the mention of the Netflix clone application:
+Here is the updated `README.md` incorporating **Helm** for Kubernetes deployment:
 
 ---
 
-# Jenkins CI/CD Pipeline for GitOps with Docker, SonarQube, OWASP, Trivy, and Kubernetes
+# Jenkins CI/CD Pipeline for GitOps with Docker, SonarQube, OWASP, Trivy, Helm, and Kubernetes
 
-This repository contains the Jenkinsfile for automating the continuous integration (CI) and continuous deployment (CD) of a **Netflix Clone** application following GitOps practices. The pipeline leverages several key tools including Jenkins, SonarQube, OWASP Dependency Check, Trivy, Docker, Kubernetes (K8S), and ArgoCD for deployment.
+This repository contains the Jenkinsfile for automating the continuous integration (CI) and continuous deployment (CD) of a **Netflix Clone** application following GitOps practices. The pipeline leverages several key tools including Jenkins, SonarQube, OWASP Dependency Check, Trivy, Docker, Kubernetes (K8S), Helm, and ArgoCD for deployment.
 
 ## Overview
 
@@ -18,7 +18,7 @@ The Jenkins pipeline automates the following stages:
 - **Docker Build**: Builds a Docker image of the application with versioning.
 - **Docker Push**: Pushes the Docker image to a Docker registry (DockerHub).
 - **Trivy Docker Image Scan**: Scans the built Docker image for vulnerabilities.
-- **Update Kubernetes Manifest**: Updates the Kubernetes deployment manifest with the new image version and pushes it to the GitHub repository.
+- **Update Kubernetes Helm Chart**: Updates the Helm chart for deployment and pushes changes to the GitHub repository.
 
 Additionally, this project is integrated with **ArgoCD** for Continuous Deployment (CD) and monitoring tools like **Prometheus** and **Grafana** for tracking application performance and health.
 
@@ -32,6 +32,7 @@ Ensure that the following tools are set up:
 - **Trivy**: For container image and filesystem scanning.
 - **Docker**: For building and pushing container images.
 - **Kubernetes**: For deploying the application using ArgoCD.
+- **Helm**: For managing Kubernetes applications through Helm charts.
 - **GitHub**: For version control and storing Kubernetes manifests.
 - **ArgoCD**: For deploying Kubernetes applications using GitOps principles.
 - **Prometheus & Grafana**: For monitoring and observability.
@@ -168,9 +169,9 @@ stage("TRIVY") {
 }
 ```
 
-### 9. **Update Kubernetes Manifest and Push to Git** (`Update K8S manifest & push to Repo` stage)
+### 9. **Update Kubernetes Helm Chart & Push to Git** (`Update K8S manifest & push to Repo` stage)
 
-The pipeline updates the Kubernetes deployment manifest (stored in `netflix/values.yaml`) with the newly built Docker image tag. The updated manifest is pushed to the GitHub repository, which triggers **ArgoCD** for continuous deployment to the Kubernetes cluster.
+This stage updates the Kubernetes deployment **Helm chart** stored in the `netflix` directory. It modifies the `values.yaml` file to reflect the new Docker image tag. The updated Helm chart is then pushed to the GitHub repository, which triggers **ArgoCD** for continuous deployment to the Kubernetes cluster.
 
 ```groovy
 stage('Update K8S manifest & push to Repo') {
@@ -202,7 +203,7 @@ stage('Update K8S manifest & push to Repo') {
 
 ## GitOps with ArgoCD
 
-Once the Kubernetes manifests are updated and pushed to the Git repository, **ArgoCD** will automatically detect the changes and deploy the updated application to the Kubernetes cluster. ArgoCD monitors the repository for any changes and ensures that the deployment in Kubernetes matches the desired state defined in Git.
+Once the Kubernetes Helm chart is updated and pushed to the Git repository, **ArgoCD** will automatically detect the changes and deploy the updated application to the Kubernetes cluster. ArgoCD monitors the repository for any changes and ensures that the deployment in Kubernetes matches the desired state defined in Git.
 
 ## Monitoring with Prometheus and Grafana
 
@@ -210,8 +211,5 @@ Once the Kubernetes manifests are updated and pushed to the Git repository, **Ar
 
 ## Conclusion
 
-This pipeline automates the process of building, scanning, and deploying the **Netflix Clone** application in a secure and efficient manner, following GitOps principles. It ensures that every change is automatically tested, built, and deployed, making it easier to manage application deployments in a Kubernetes environment with ArgoCD.
+This pipeline automates the process of building, scanning, and deploying the **Netflix Clone** application in a secure and efficient manner, following GitOps principles. It ensures that every change is automatically tested, built, and deployed, making it easier to manage application deployments in a Kubernetes environment with ArgoCD and Helm.
 
----
-
-Let me know if you need further adjustments!
