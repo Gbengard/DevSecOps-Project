@@ -1,13 +1,8 @@
-FROM node:16.17.0-alpine AS builder
+FROM node:16.17.0-alpine as builder
 WORKDIR /app
 COPY ./package.json .
 COPY ./yarn.lock .
-RUN yarn config set registry https://registry.npmjs.org
-RUN yarn config set network-timeout 600000
-
-# Clean cache and install dependencies
-RUN yarn cache clean --all
-RUN yarn install --force
+RUN yarn install
 COPY . .
 ARG TMDB_V3_API_KEY
 ENV VITE_APP_TMDB_V3_API_KEY=${TMDB_V3_API_KEY}
