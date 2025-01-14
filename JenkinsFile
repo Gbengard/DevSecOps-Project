@@ -14,6 +14,11 @@ pipeline{
                 cleanWs()
             }
         }
+        stage('Checkout') {
+            steps {
+                sh "ls"
+            }
+        }
 
         stage("Sonarqube Analysis "){
             environment {
