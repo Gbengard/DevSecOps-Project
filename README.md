@@ -95,6 +95,8 @@ stage("Sonarqube Analysis") {
 
 ### 4. **OWASP Dependency Check** (`OWASP FS SCAN` stage)
 
+![Dependency-check](images/OWASP.png)
+
 This step runs **OWASP Dependency Check** to scan the dependencies in the project for known vulnerabilities.
 
 ```groovy
@@ -212,7 +214,9 @@ stage('Update K8S manifest & push to Repo') {
 
 ## GitOps with ArgoCD
 
+
 ![ArgoCD](images/ArgoCD.png)
+
 
 Once the Kubernetes Helm chart is updated and pushed to the Git repository, **ArgoCD** will automatically detect the changes and deploy the updated application to the Kubernetes cluster. ArgoCD monitors the repository for any changes and ensures that the deployment in Kubernetes matches the desired state defined in Git.
 
