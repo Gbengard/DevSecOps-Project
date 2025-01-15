@@ -1,5 +1,3 @@
-Here is the updated `README.md` incorporating **Helm** for Kubernetes deployment:
-
 ---
 
 # Jenkins CI/CD Pipeline for GitOps with Docker, SonarQube, OWASP, Trivy, Helm, and Kubernetes
