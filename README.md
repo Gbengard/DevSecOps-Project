@@ -1,6 +1,6 @@
 ---
 
-# Jenkins CI/CD Pipeline for GitOps with Docker, SonarQube, OWASP, Trivy, Helm, and Kubernetes
+# Jenkins CI/CD Pipeline for GitOps with Docker, SonarQube, OWASP, Trivy, Helm, Kubernetes, and ArgoCD
 
 ![Netflix App](images/Netflix.png)
 
