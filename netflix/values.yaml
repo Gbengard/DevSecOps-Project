@@ -4,7 +4,7 @@ app:
   name: netflix-app
 image:
   repository: gbengard/netflix-clone
-  tag: 42
+  tag: 43
 service:
   type: NodePort
   port: 80
