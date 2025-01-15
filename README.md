@@ -141,6 +141,9 @@ stage("Docker Build") {
 
 ### 7. **Push Docker Image** (`Push Image` stage)
 
+![dockerhub](images/dockerhub.png)
+
+
 After building the Docker image, this stage pushes the image to DockerHub for later deployment.
 
 ```groovy
