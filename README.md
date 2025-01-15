@@ -4,6 +4,8 @@ Here is the updated `README.md` incorporating **Helm** for Kubernetes deployment
 
 # Jenkins CI/CD Pipeline for GitOps with Docker, SonarQube, OWASP, Trivy, Helm, and Kubernetes
 
+![Netflix App](images/Netflix.png)
+
 This repository contains the Jenkinsfile for automating the continuous integration (CI) and continuous deployment (CD) of a **Netflix Clone** application following GitOps practices. The pipeline leverages several key tools including Jenkins, SonarQube, OWASP Dependency Check, Trivy, Docker, Kubernetes (K8S), Helm, and ArgoCD for deployment.
 
 ## Overview
@@ -39,6 +41,8 @@ Ensure that the following tools are set up:
 
 ## Pipeline Details
 
+![Jenkins](images/Jenkins.png)
+
 ### 1. **Clean Workspace** (`clean workspace` stage)
 
 This stage ensures that any residual files from previous builds are cleared from the workspace, preventing potential conflicts during the new build.
@@ -65,6 +69,8 @@ stage('Checkout') {
 ```
 
 ### 3. **SonarQube Analysis** (`Sonarqube Analysis` stage)
+
+![Sonarqube](images/Sonarqube.png)
 
 This stage analyzes the codebase for quality issues using **SonarQube**. It scans the source code and reports on various quality aspects, such as code smells, bugs, vulnerabilities, and coverage.
 
@@ -203,9 +209,13 @@ stage('Update K8S manifest & push to Repo') {
 
 ## GitOps with ArgoCD
 
+![ArgoCD](images/ArgoCD.png)
+
 Once the Kubernetes Helm chart is updated and pushed to the Git repository, **ArgoCD** will automatically detect the changes and deploy the updated application to the Kubernetes cluster. ArgoCD monitors the repository for any changes and ensures that the deployment in Kubernetes matches the desired state defined in Git.
 
 ## Monitoring with Prometheus and Grafana
+
+![Grafana](images/Grafana.png)
 
 **Prometheus** is integrated into the Kubernetes cluster to collect metrics from the application. **Grafana** is used to visualize these metrics, providing insights into the application's performance, resource usage, and overall health.
 
